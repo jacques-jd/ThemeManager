@@ -30,7 +30,4 @@ var data = [
         col1: "#F6EABE",
         col2: "#F6D7A7"
     },
-    {
-
-    }
 ];

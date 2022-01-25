@@ -1,21 +1,20 @@
-window.onload = event =>
+window.addEventListener("load", event =>
 {
 
     let themes = data;
     let sets = settings;
 
     selector.style.display = "flex";
-    selector.style.gap = "1em";
+    selector.style.flexWrap = "wrap";
+    selector.style.gap = sets.gap;
 
     for (let theme of themes)
     {
-        console.log("theme", theme);
         let button = document.createElement("div");
 
         for (let color in theme)
         {
             if (color === "default") continue;
-            console.log(theme[color]);
             let colorsquare = document.createElement("div");
             colorsquare.style.width = colorsquare.style.height = sets.width;
             colorsquare.style.backgroundColor = theme[color];
@@ -40,7 +39,7 @@ window.onload = event =>
         }
         selector.appendChild(button);
     }
-}
+});
 
 function validateHex(color)
 {
@@ -75,7 +74,8 @@ function setCSSVariables(theme)
     {
         document.documentElement.style.setProperty(`--${color}`, theme[color]);
     }
-    document.documentElement.style.setProperty(`--link`, `#${darkenColor(theme.bg, 60)}`);
+    document.documentElement.style.setProperty(`--bglink`, `#${darkenColor(theme.bg, 40)}`);
+    document.documentElement.style.setProperty(`--fglink`, `#${darkenColor(theme.fg, 40)}`);
 
 }
 
