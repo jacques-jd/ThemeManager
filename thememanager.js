@@ -5,13 +5,16 @@ window.addEventListener("load", (event) => {
 
     //sets style attributes for the container holding the themes
     selector.style.display = "flex";
+    selector.style.width = "fit-content";
     selector.style.flexWrap = "wrap";
     selector.style.gap = sets.gap;
 
+    let rawcookies, cookies;
+
     if(sets.cookies){
          //gets cookies
-        let rawcookies = document.cookie.split(";");
-        let cookies = [];
+        rawcookies = document.cookie.split(";");
+        cookies = [];
         for(let rawcookie of rawcookies) {
         
             let cooki = rawcookie.split("=");
