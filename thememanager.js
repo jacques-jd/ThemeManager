@@ -1,5 +1,4 @@
-window.addEventListener("load", event =>
-{
+window.addEventListener("load", (event) => {
     //load theme colours and global settings from themes.js
     let themes = data;
     let sets = settings;
@@ -9,15 +8,24 @@ window.addEventListener("load", event =>
     selector.style.flexWrap = "wrap";
     selector.style.gap = sets.gap;
 
+    if(sets.cookies){
+         //gets cookies
+        let rawcookies = document.cookie.split(";");
+        let cookies = [];
+        for(let rawcookie of rawcookies) {
+        
+            let cooki = rawcookie.split("=");
+            cookies.push({name:cooki[0], value:cooki[1]});
+        }
+    }
+   
     //begin looping through all the themes from themes.js
-    for (let theme of themes)
-    {
+    for (let theme of themes) {
         //create a div that will hold the theme's 4 colors
         let button = document.createElement("div");
 
         //begin looping through each color of the theme
-        for (let color in theme)
-        {
+        for (let color in theme) {
             //skip over the default attribute, since it is not a colour but a flag to indicate which theme will be applied automatically
             if (color === "default") continue;
 
@@ -40,14 +48,24 @@ window.addEventListener("load", event =>
         button.style.borderRadius = "5px";
         button.style.overflow = "hidden";
 
-        button.onclick = () =>
-        {
+        button.addEventListener("click", () => {
             //when clicking a theme, set the theme by changing css root variables
             setCSSVariables(theme);
-        }
-        if (theme.default)
-        {
-            //apply the default theme
+
+            if(sets.cookies) {
+                 //set cookie
+                document.cookie = `themeid=${themes.indexOf(
+                    theme
+                )};path=/;domain=.${sets.domain};secure`;
+            }
+           
+        });
+
+        if (document.cookie !== "" && sets.cookies) {
+            if(cookies[0].value == themes.indexOf(theme))
+                button.click();
+        } else if (theme.default) {
+            //apply the default theme if no cookie present
             button.click();
         }
         //add the button to the container of themes div
@@ -59,18 +77,14 @@ window.addEventListener("load", event =>
 // "#AABBCC" => "AABBCC"
 // "#ABC" => "AABBCC"
 // "ABC" => "AABBCC"
-function validateHex(color)
-{
-    if (color.startsWith("#"))
-    {
+function validateHex(color) {
+    if (color.startsWith("#")) {
         color = color.slice(1);
     }
-    if (color.length === 3)
-    {
+    if (color.length === 3) {
         color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
     }
-    if (color.length !== 6 || color.match(/[g-z]/))
-    {
+    if (color.length !== 6 || color.match(/[g-z]/)) {
         throw new Error("Invalid hex");
     }
 
@@ -78,8 +92,7 @@ function validateHex(color)
 }
 
 //this extracts the rgb values from a hex color and returns an object {R,G,B}
-function getRGB(color)
-{
+function getRGB(color) {
     let r = Number(`0x${color[0] + color[1]}`),
         g = Number(`0x${color[2] + color[3]}`),
         b = Number(`0x${color[4] + color[5]}`);
@@ -88,44 +101,56 @@ function getRGB(color)
 }
 
 function getHex(rgb) {
-    if((rgb.r < 0 || rgb.g < 0 || rgb.b < 0) || (rgb.r > 255 || rgb.g > 255 || rgb.b > 255))
+    if (
+        rgb.r < 0 ||
+        rgb.g < 0 ||
+        rgb.b < 0 ||
+        rgb.r > 255 ||
+        rgb.g > 255 ||
+        rgb.b > 255
+    )
         throw new Error("RGB Numbers out of bound.");
 
-    let hexr = (rgb.r.toString(16).length === 1 ? "0" : "") + rgb.r.toString(16),
-        hexg = (rgb.g.toString(16).length === 1 ? "0" : "") + rgb.g.toString(16),
-        hexb = (rgb.b.toString(16).length === 1 ? "0" : "") + rgb.b.toString(16);
+    let hexr =
+            (rgb.r.toString(16).length === 1 ? "0" : "") + rgb.r.toString(16),
+        hexg =
+            (rgb.g.toString(16).length === 1 ? "0" : "") + rgb.g.toString(16),
+        hexb =
+            (rgb.b.toString(16).length === 1 ? "0" : "") + rgb.b.toString(16);
 
     return validateHex(hexr + hexg + hexb);
 }
 
 //this sets the :root variables in CSS
-function setCSSVariables(theme)
-{
-    for (let color in theme)
-    {
+function setCSSVariables(theme) {
+    for (let color in theme) {
         document.documentElement.style.setProperty(`--${color}`, theme[color]);
     }
-    
-    //creates link colors automatically from fg and bg colors.
-    document.documentElement.style.setProperty(`--bglink`, "#" + darkenColor(theme.bg, 40));
-    document.documentElement.style.setProperty(`--fglink`, "#" + darkenColor(theme.fg, 40));
 
+    //creates link colors automatically from fg and bg colors.
+    document.documentElement.style.setProperty(
+        `--bglink`,
+        "#" + darkenColor(theme.bg, 40)
+    );
+    document.documentElement.style.setProperty(
+        `--fglink`,
+        "#" + darkenColor(theme.fg, 40)
+    );
 }
 
 //darkens an RGB color by a percentage (i use this to create link colors)
 //color: RGB Object {R,G,B}
 //percent: a percentage (either 0.00 - 1.00 or 0 - 100)
-function darkenColor(color, percent)
-{
+function darkenColor(color, percent) {
     if (percent > 1) percent = percent / 100;
 
     color = validateHex(color);
     let rgb = getRGB(color);
 
-    let r = Math.max(Math.floor(rgb.r - (255 * percent)), 0),
-        g = Math.max(Math.floor(rgb.g - (255 * percent)), 0),
-        b = Math.max(Math.floor(rgb.b - (255 * percent)), 0);
-    color = getHex({r: r.toString(16), g:g.toString(16), b: b.toString(16)});
+    let r = Math.max(Math.floor(rgb.r - 255 * percent), 0),
+        g = Math.max(Math.floor(rgb.g - 255 * percent), 0),
+        b = Math.max(Math.floor(rgb.b - 255 * percent), 0);
+    color = getHex({ r: r.toString(16), g: g.toString(16), b: b.toString(16) });
 
     return color;
 }
