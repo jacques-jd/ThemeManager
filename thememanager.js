@@ -87,6 +87,17 @@ function getRGB(color)
     return { r: r, g: g, b: b };
 }
 
+function getHex(rgb) {
+    if((rgb.r < 0 || rgb.g < 0 || rgb.b < 0) || (rgb.r > 255 || rgb.g > 255 || rgb.b > 255))
+        throw new Error("RGB Numbers out of bound.");
+
+    let hexr = (rgb.r.toString(16).length === 1 ? "0" : "") + rgb.r.toString(16),
+        hexg = (rgb.g.toString(16).length === 1 ? "0" : "") + rgb.g.toString(16),
+        hexb = (rgb.b.toString(16).length === 1 ? "0" : "") + rgb.b.toString(16);
+
+    return validateHex(hexr + hexg + hexb);
+}
+
 //this sets the :root variables in CSS
 function setCSSVariables(theme)
 {
@@ -96,8 +107,8 @@ function setCSSVariables(theme)
     }
     
     //creates link colors automatically from fg and bg colors.
-    document.documentElement.style.setProperty(`--bglink`, `#${darkenColor(theme.bg, 40)}`);
-    document.documentElement.style.setProperty(`--fglink`, `#${darkenColor(theme.fg, 40)}`);
+    document.documentElement.style.setProperty(`--bglink`, "#" + darkenColor(theme.bg, 40));
+    document.documentElement.style.setProperty(`--fglink`, "#" + darkenColor(theme.fg, 40));
 
 }
 
@@ -111,10 +122,10 @@ function darkenColor(color, percent)
     color = validateHex(color);
     let rgb = getRGB(color);
 
-    let r = Math.floor(rgb.r * (1 - percent)),
-        g = Math.floor(rgb.g * (1 - percent)),
-        b = Math.floor(rgb.b * (1 - percent));
-    color = r.toString(16) + g.toString(16) + b.toString(16);
+    let r = Math.max(Math.floor(rgb.r - (255 * percent)), 0),
+        g = Math.max(Math.floor(rgb.g - (255 * percent)), 0),
+        b = Math.max(Math.floor(rgb.b - (255 * percent)), 0);
+    color = getHex({r: r.toString(16), g:g.toString(16), b: b.toString(16)});
 
     return color;
 }
