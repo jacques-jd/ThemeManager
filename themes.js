@@ -2,7 +2,7 @@ var settings = {
     width: "3em", //width of each color square
     gap: "1em",   //width of space between color selectors
     hidden: true, //whether the color selectors should be hidden by default or shown
-    cookies: true, //whether you want to use cookies to save site-wide theme choices
+    cookies: false, //whether you want to use cookies to save site-wide theme choices. make sure to set the domain to the domain you're using
     domain: 'jacq.dev' //the domain for the cookies to be set on. use top level domain only please
 };
 
