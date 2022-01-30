@@ -130,7 +130,10 @@ function setCSSVariables(theme) {
         document.documentElement.style.setProperty(`--${color}`, theme[color]);
     }
 
-    //creates link colors automatically from fg and bg colors.
+    //creates link and accent colors automatically from fg and bg colors.
+    //Ideal uses:
+    //bg/fglink: For text you need to be readable over BG or FG colors.
+    //bg/fgaccent: For style accent such as borders
     document.documentElement.style.setProperty(
         `--bglink`,
         "#" + darkenColor(theme.bg, 40)
@@ -138,6 +141,14 @@ function setCSSVariables(theme) {
     document.documentElement.style.setProperty(
         `--fglink`,
         "#" + darkenColor(theme.fg, 40)
+    );
+    document.documentElement.style.setProperty(
+        `--bgaccent`,
+        "#" + darkenColor(theme.bg, 10)
+    );
+    document.documentElement.style.setProperty(
+        `--fgaccent`,
+        "#" + darkenColor(theme.fg, 10)
     );
 }
 
