@@ -47,7 +47,7 @@ window.addEventListener("load", (event) => {
         button.style.gridTemplateColumns = "1fr 1fr";
         button.style.width = "fit-content";
         button.style.cursor = "pointer";
-        button.style.boxShadow = "0px 1px 1px 2px #00000044";
+        button.style.boxShadow = "0px 1px 1px 1px #00000044";
         button.style.borderRadius = "5px";
         button.style.overflow = "hidden";
 
