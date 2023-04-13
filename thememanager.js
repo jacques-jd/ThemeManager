@@ -65,7 +65,10 @@ window.addEventListener("load", (event) => {
         });
 
         if (document.cookie !== "" && sets.cookies) {
-            if(cookies[0].value == themes.indexOf(theme))
+            //if a cookie is present, apply the theme that matches the cookie
+            let cookie = cookies.find((cookie) => cookie.name === "themeid");
+
+            if(cookie.value == themes.indexOf(theme))
                 button.click();
         } else if (theme.default) {
             //apply the default theme if no cookie present
