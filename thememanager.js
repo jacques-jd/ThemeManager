@@ -67,6 +67,7 @@ window.addEventListener("load", (event) => {
         if (document.cookie !== "" && sets.cookies) {
             //if a cookie is present, apply the theme that matches the cookie
             let cookie = cookies.find((cookie) => cookie.name === "themeid");
+            console.log(cookies);
 
             if(cookie.value == themes.indexOf(theme))
                 button.click();
