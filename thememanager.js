@@ -16,10 +16,12 @@ window.addEventListener("load", (event) => {
         rawcookies = document.cookie.split(";");
         cookies = [];
         for(let rawcookie of rawcookies) {
-        
             let cooki = rawcookie.split("=");
             cookies.push({name:cooki[0], value:cooki[1]});
         }
+
+        if(cookies.find(cookie => cookie.name === "themeid") === undefined)
+            cookies.push({name: "themeid", value: "0"});
     }
    
     //begin looping through all the themes from themes.js
